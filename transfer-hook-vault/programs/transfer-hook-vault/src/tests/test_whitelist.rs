@@ -79,7 +79,7 @@ fn test_claim_invalid_proof_fails() {
 }
 
 #[test]
-fn test_revoke_whitelist() {
+fn test_remove_user() {
     let (mut svm, admin) = setup();
     let (_mint, tree, users) = full_setup(&mut svm, &admin);
 
@@ -93,7 +93,7 @@ fn test_revoke_whitelist() {
     let ix = Instruction {
         program_id: PROGRAM_ID,
         accounts: convert_account_metas(
-            crate::accounts::RevokeWhitelist {
+            crate::accounts::RemoveUser {
                 admin: to_anchor_pubkey(&admin.pubkey()),
                 vault_config: to_anchor_pubkey(&vault_config_pda),
                 approval: to_anchor_pubkey(&approval_pda),
@@ -101,8 +101,8 @@ fn test_revoke_whitelist() {
             }
             .to_account_metas(None),
         ),
-        data: crate::instruction::RevokeWhitelist {
-            user_to_revoke: to_anchor_pubkey(&users[0].pubkey()),
+        data: crate::instruction::RemoveUser {
+            user_to_remove: to_anchor_pubkey(&users[0].pubkey()),
         }
         .data(),
     };
@@ -118,5 +118,5 @@ fn test_revoke_whitelist() {
         "Approval should be closed"
     );
 
-    msg!("test_revoke_whitelist passed");
+    msg!("test_remove_user passed");
 }

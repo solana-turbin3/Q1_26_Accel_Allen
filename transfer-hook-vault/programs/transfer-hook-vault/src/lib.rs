@@ -47,11 +47,11 @@ pub mod transfer_hook_vault {
         ctx.accounts.handler(proof, &ctx.bumps)
     }
 
-    pub fn revoke_whitelist(
-        ctx: Context<RevokeWhitelist>,
-        user_to_revoke: Pubkey,
+    pub fn remove_user(
+        ctx: Context<RemoveUser>,
+        user_to_remove: Pubkey,
     ) -> Result<()> {
-        ctx.accounts.handler(user_to_revoke)
+        ctx.accounts.handler(user_to_remove)
     }
 
     pub fn deposit(ctx: Context<Deposit>, amount: u64) -> Result<()> {

@@ -4,8 +4,8 @@ use crate::errors::VaultError;
 use crate::state::{VaultConfig, UserState};
 
 #[derive(Accounts)]
-#[instruction(user_to_revoke: Pubkey)]
-pub struct RevokeWhitelist<'info> {
+#[instruction(user_to_remove: Pubkey)]
+pub struct RemoveUser<'info> {
     #[account(mut)]
     pub admin: Signer<'info>,
 
@@ -19,18 +19,18 @@ pub struct RevokeWhitelist<'info> {
     #[account(
         mut,
         close = admin,
-        seeds = [b"approval", user_to_revoke.as_ref()],
+        seeds = [b"approval", user_to_remove.as_ref()],
         bump = approval.bump,
-        constraint = approval.user == user_to_revoke,
+        constraint = approval.user == user_to_remove,
     )]
     pub approval: Account<'info, UserState>,
 
     pub system_program: Program<'info, System>,
 }
 
-impl<'info> RevokeWhitelist<'info> {
-    pub fn handler(&mut self, user_to_revoke: Pubkey) -> Result<()> {
-        msg!("Whitelist revoked for user: {}", user_to_revoke);
+impl<'info> RemoveUser<'info> {
+    pub fn handler(&mut self, user_to_remove: Pubkey) -> Result<()> {
+        msg!("User removed: {}", user_to_remove);
         Ok(())
     }
 }

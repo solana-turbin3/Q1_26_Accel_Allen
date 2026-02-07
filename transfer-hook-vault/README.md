@@ -30,7 +30,7 @@ Because the transfer hook lives in the same program as the vault logic, calling 
 | `initialize_extra_account_meta_list` | Admin | Registers the approval PDA as an ExtraAccountMeta so Token-2022 resolves it during transfers |
 | `update_merkle_root` | Admin | Updates the Merkle root (invalidates unclaimed proofs) |
 | `create_user_state` | User | Submits a Merkle proof → verifies against root → creates UserState PDA |
-| `revoke_whitelist` | Admin | Closes a user's UserState PDA |
+| `remove_user` | Admin | Closes a user's UserState PDA, removing whitelist access |
 | `deposit` | User | Records deposit amount. Paired with client-side `transfer_checked` |
 | `withdraw` | User | Records withdrawal, approves user as delegate on vault ATA. Paired with client-side `transfer_checked` |
 | `transfer_hook` | Token-2022 | Automatically invoked on `transfer_checked`. Verifies the caller's UserState PDA exists |
