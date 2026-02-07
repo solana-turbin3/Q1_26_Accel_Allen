@@ -23,22 +23,22 @@ fn test_deposit_whitelisted() {
     let user_ata = get_user_ata(&users[0].pubkey(), &mint);
     assert_eq!(get_token_balance(&svm, &user_ata), 10_000 - deposit_amount);
 
-    let (approval_pda, _) = get_approval_pda(&users[0].pubkey());
-    let acct = svm.get_account(&approval_pda).unwrap();
-    let approval = crate::state::UserState::try_deserialize(
+    let (user_state_pda, _) = get_user_state_pda(&users[0].pubkey());
+    let acct = svm.get_account(&user_state_pda).unwrap();
+    let user_state = crate::state::UserState::try_deserialize(
         &mut acct.data.as_ref(),
     ).unwrap();
-    assert_eq!(approval.amount_deposited, deposit_amount);
+    assert_eq!(user_state.amount_deposited, deposit_amount);
 
     msg!("test_deposit_whitelisted passed");
 }
 
 #[test]
-fn test_deposit_without_approval_fails() {
+fn test_deposit_without_user_state_fails() {
     let (mut svm, admin) = setup();
     let (mint, _tree, users) = full_setup(&mut svm, &admin);
 
-    // Try transfer_checked directly — hook should reject because no approval PDA
+    // Try transfer_checked directly — hook should reject because no UserState PDA
     let (vault_config_pda, _) = get_vault_config_pda();
     let vault = get_vault_ata(&vault_config_pda, &mint);
     let user_ata = get_user_ata(&users[0].pubkey(), &mint);
@@ -51,7 +51,7 @@ fn test_deposit_without_approval_fails() {
     let blockhash = svm.latest_blockhash();
     let tx = Transaction::new(&[&users[0]], msg, blockhash);
     let result = svm.send_transaction(tx);
-    assert!(result.is_err(), "Transfer without approval should fail");
+    assert!(result.is_err(), "Transfer without user state should fail");
 
-    msg!("test_deposit_without_approval_fails passed");
+    msg!("test_deposit_without_user_state_fails passed");
 }

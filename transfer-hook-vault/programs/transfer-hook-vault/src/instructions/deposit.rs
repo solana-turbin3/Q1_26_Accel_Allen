@@ -15,17 +15,17 @@ pub struct Deposit<'info> {
 
     #[account(
         mut,
-        seeds = [b"approval", user.key().as_ref()],
-        bump = approval.bump,
-        constraint = approval.user == user.key() @ VaultError::NotWhitelisted,
+        seeds = [b"user_state", user.key().as_ref()],
+        bump = user_state.bump,
+        constraint = user_state.user == user.key() @ VaultError::NotWhitelisted,
     )]
-    pub approval: Account<'info, UserState>,
+    pub user_state: Account<'info, UserState>,
 }
 
 impl<'info> Deposit<'info> {
     pub fn handler(&mut self, amount: u64) -> Result<()> {
         // Update deposited amount (client must pair with transfer_checked in same tx)
-        self.approval.amount_deposited = self.approval.amount_deposited
+        self.user_state.amount_deposited = self.user_state.amount_deposited
             .checked_add(amount)
             .unwrap();
 

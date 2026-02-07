@@ -3,7 +3,7 @@ mod helpers;
 #[cfg(test)]
 mod test_initialize;
 #[cfg(test)]
-mod test_whitelist;
+mod test_user_state;
 #[cfg(test)]
 mod test_deposit;
 #[cfg(test)]

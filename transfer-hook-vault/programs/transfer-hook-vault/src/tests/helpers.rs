@@ -115,8 +115,8 @@ pub fn get_vault_config_pda() -> (Pubkey, u8) {
     Pubkey::find_program_address(&[b"vault_config"], &PROGRAM_ID)
 }
 
-pub fn get_approval_pda(user: &Pubkey) -> (Pubkey, u8) {
-    Pubkey::find_program_address(&[b"approval", user.as_ref()], &PROGRAM_ID)
+pub fn get_user_state_pda(user: &Pubkey) -> (Pubkey, u8) {
+    Pubkey::find_program_address(&[b"user_state", user.as_ref()], &PROGRAM_ID)
 }
 
 pub fn get_extra_account_meta_list_pda(mint: &Pubkey) -> (Pubkey, u8) {
@@ -206,7 +206,7 @@ pub fn do_initialize(
     initial_supply: u64,
 ) -> Pubkey {
     let (vault_config_pda, _) = get_vault_config_pda();
-    let (vault_approval_pda, _) = get_approval_pda(&vault_config_pda);
+    let (vault_user_state_pda, _) = get_user_state_pda(&vault_config_pda);
     let vault_ata = get_vault_ata(&vault_config_pda, &mint.pubkey());
 
     let ix = Instruction {
@@ -214,7 +214,7 @@ pub fn do_initialize(
         accounts: crate::accounts::Initialize {
             admin: to_anchor_pubkey(&admin.pubkey()),
             vault_config: to_anchor_pubkey(&vault_config_pda),
-            vault_approval: to_anchor_pubkey(&vault_approval_pda),
+            vault_user_state: to_anchor_pubkey(&vault_user_state_pda),
             mint: to_anchor_pubkey(&mint.pubkey()),
             vault: to_anchor_pubkey(&vault_ata),
             associated_token_program: to_anchor_pubkey(&Pubkey::from(spl_associated_token_account::ID.to_bytes())),
@@ -294,7 +294,7 @@ pub fn do_create_user_state(
     proof: Vec<[u8; 32]>,
 ) -> Result<(), String> {
     let (vault_config_pda, _) = get_vault_config_pda();
-    let (approval_pda, _) = get_approval_pda(&user.pubkey());
+    let (user_state_pda, _) = get_user_state_pda(&user.pubkey());
 
     let ix = Instruction {
         program_id: PROGRAM_ID,
@@ -302,7 +302,7 @@ pub fn do_create_user_state(
             crate::accounts::CreateUserState {
                 user: to_anchor_pubkey(&user.pubkey()),
                 vault_config: to_anchor_pubkey(&vault_config_pda),
-                approval: to_anchor_pubkey(&approval_pda),
+                user_state: to_anchor_pubkey(&user_state_pda),
                 system_program: to_anchor_pubkey(&SYSTEM_PROGRAM_ID),
             }
             .to_account_metas(None),
@@ -394,7 +394,7 @@ pub fn build_transfer_checked_ix(
     authority: &Pubkey,
     amount: u64,
 ) -> Instruction {
-    let (approval_pda, _) = get_approval_pda(authority);
+    let (user_state_pda, _) = get_user_state_pda(authority);
     let (extra_meta_list, _) = get_extra_account_meta_list_pda(mint);
 
     let spl_ix = spl_token_2022::instruction::transfer_checked(
@@ -419,7 +419,7 @@ pub fn build_transfer_checked_ix(
         data: spl_ix.data,
     };
 
-    ix.accounts.push(solana_instruction::AccountMeta::new_readonly(approval_pda, false));
+    ix.accounts.push(solana_instruction::AccountMeta::new_readonly(user_state_pda, false));
     ix.accounts.push(solana_instruction::AccountMeta::new_readonly(extra_meta_list, false));
     ix.accounts.push(solana_instruction::AccountMeta::new_readonly(PROGRAM_ID, false));
 
@@ -433,7 +433,7 @@ pub fn do_deposit(
     amount: u64,
 ) -> Result<(), String> {
     let (vault_config_pda, _) = get_vault_config_pda();
-    let (approval_pda, _) = get_approval_pda(&user.pubkey());
+    let (user_state_pda, _) = get_user_state_pda(&user.pubkey());
     let vault = get_vault_ata(&vault_config_pda, mint);
     let user_ata = get_user_ata(&user.pubkey(), mint);
 
@@ -443,7 +443,7 @@ pub fn do_deposit(
             crate::accounts::Deposit {
                 user: to_anchor_pubkey(&user.pubkey()),
                 vault_config: to_anchor_pubkey(&vault_config_pda),
-                approval: to_anchor_pubkey(&approval_pda),
+                user_state: to_anchor_pubkey(&user_state_pda),
             }
             .to_account_metas(None),
         ),
@@ -469,7 +469,7 @@ pub fn do_withdraw(
     amount: u64,
 ) -> Result<(), String> {
     let (vault_config_pda, _) = get_vault_config_pda();
-    let (approval_pda, _) = get_approval_pda(&user.pubkey());
+    let (user_state_pda, _) = get_user_state_pda(&user.pubkey());
     let vault = get_vault_ata(&vault_config_pda, mint);
     let user_ata = get_user_ata(&user.pubkey(), mint);
 
@@ -479,7 +479,7 @@ pub fn do_withdraw(
             crate::accounts::Withdraw {
                 user: to_anchor_pubkey(&user.pubkey()),
                 vault_config: to_anchor_pubkey(&vault_config_pda),
-                approval: to_anchor_pubkey(&approval_pda),
+                user_state: to_anchor_pubkey(&user_state_pda),
                 vault: to_anchor_pubkey(&vault),
                 token_program: to_anchor_pubkey(&TOKEN_2022_PROGRAM_ID),
             }

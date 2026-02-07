@@ -19,11 +19,11 @@ pub struct Withdraw<'info> {
 
     #[account(
         mut,
-        seeds = [b"approval", user.key().as_ref()],
-        bump = approval.bump,
-        constraint = approval.user == user.key() @ VaultError::NotWhitelisted,
+        seeds = [b"user_state", user.key().as_ref()],
+        bump = user_state.bump,
+        constraint = user_state.user == user.key() @ VaultError::NotWhitelisted,
     )]
-    pub approval: Account<'info, UserState>,
+    pub user_state: Account<'info, UserState>,
 
     #[account(
         mut,
@@ -38,7 +38,7 @@ impl<'info> Withdraw<'info> {
     pub fn handler(&mut self, amount: u64) -> Result<()> {
         // Check withdraw doesn't exceed deposited
         require!(
-            amount <= self.approval.amount_deposited,
+            amount <= self.user_state.amount_deposited,
             VaultError::WithdrawExceedsDeposited
         );
 
@@ -68,7 +68,7 @@ impl<'info> Withdraw<'info> {
         )?;
 
         // Update deposited amount
-        self.approval.amount_deposited = self.approval.amount_deposited
+        self.user_state.amount_deposited = self.user_state.amount_deposited
             .checked_sub(amount)
             .ok_or(VaultError::WithdrawExceedsDeposited)?;
 

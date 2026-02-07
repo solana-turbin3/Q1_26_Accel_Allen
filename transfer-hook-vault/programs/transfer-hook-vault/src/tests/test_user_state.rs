@@ -51,31 +51,31 @@ fn test_create_user_state() {
     let proof = tree.proof(0);
     do_create_user_state(&mut svm, &users[0], proof).unwrap();
 
-    let (approval_pda, _) = get_approval_pda(&users[0].pubkey());
-    let acct = svm.get_account(&approval_pda).unwrap();
-    let approval = crate::state::UserState::try_deserialize(
+    let (user_state_pda, _) = get_user_state_pda(&users[0].pubkey());
+    let acct = svm.get_account(&user_state_pda).unwrap();
+    let user_state = crate::state::UserState::try_deserialize(
         &mut acct.data.as_ref(),
     ).unwrap();
-    assert_eq!(approval.user, to_anchor_pubkey(&users[0].pubkey()));
-    assert_eq!(approval.amount_deposited, 0);
+    assert_eq!(user_state.user, to_anchor_pubkey(&users[0].pubkey()));
+    assert_eq!(user_state.amount_deposited, 0);
 
     msg!("test_create_user_state passed");
 }
 
 #[test]
-fn test_claim_invalid_proof_fails() {
+fn test_create_user_state_invalid_proof() {
     let (mut svm, admin) = setup();
     let (_mint, tree, users) = full_setup(&mut svm, &admin);
 
     let wrong_proof = tree.proof(1);
     let result = do_create_user_state(&mut svm, &users[0], wrong_proof);
-    assert!(result.is_err(), "Claim with invalid proof should fail");
+    assert!(result.is_err(), "Create user state with invalid proof should fail");
     assert!(
         result.unwrap_err().contains("InvalidMerkleProof"),
         "Error should mention InvalidMerkleProof"
     );
 
-    msg!("test_claim_invalid_proof_fails passed");
+    msg!("test_create_user_state_invalid_proof passed");
 }
 
 #[test]
@@ -86,8 +86,8 @@ fn test_remove_user() {
     let proof = tree.proof(0);
     do_create_user_state(&mut svm, &users[0], proof).unwrap();
 
-    let (approval_pda, _) = get_approval_pda(&users[0].pubkey());
-    assert!(svm.get_account(&approval_pda).is_some());
+    let (user_state_pda, _) = get_user_state_pda(&users[0].pubkey());
+    assert!(svm.get_account(&user_state_pda).is_some());
 
     let (vault_config_pda, _) = get_vault_config_pda();
     let ix = Instruction {
@@ -96,7 +96,7 @@ fn test_remove_user() {
             crate::accounts::RemoveUser {
                 admin: to_anchor_pubkey(&admin.pubkey()),
                 vault_config: to_anchor_pubkey(&vault_config_pda),
-                approval: to_anchor_pubkey(&approval_pda),
+                user_state: to_anchor_pubkey(&user_state_pda),
                 system_program: to_anchor_pubkey(&SYSTEM_PROGRAM_ID),
             }
             .to_account_metas(None),
@@ -112,10 +112,10 @@ fn test_remove_user() {
     let tx = Transaction::new(&[&admin], msg, blockhash);
     svm.send_transaction(tx).unwrap();
 
-    let acct = svm.get_account(&approval_pda);
+    let acct = svm.get_account(&user_state_pda);
     assert!(
         acct.is_none() || acct.unwrap().lamports == 0,
-        "Approval should be closed"
+        "UserState should be closed"
     );
 
     msg!("test_remove_user passed");

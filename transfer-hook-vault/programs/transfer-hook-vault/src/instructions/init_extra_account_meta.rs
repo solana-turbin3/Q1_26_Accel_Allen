@@ -34,7 +34,7 @@ impl<'info> InitializeExtraAccountMetaList<'info> {
             ExtraAccountMeta::new_with_seeds(
                 &[
                     Seed::Literal {
-                        bytes: b"approval".to_vec(),
+                        bytes: b"user_state".to_vec(),
                     },
                     Seed::AccountKey { index: 3 }, // owner
                 ],

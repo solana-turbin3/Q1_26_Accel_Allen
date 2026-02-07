@@ -21,12 +21,12 @@ fn test_withdraw_whitelisted() {
     let user_ata = get_user_ata(&users[0].pubkey(), &mint);
     assert_eq!(get_token_balance(&svm, &user_ata), 10_000 - 500 + 200);
 
-    let (approval_pda, _) = get_approval_pda(&users[0].pubkey());
-    let acct = svm.get_account(&approval_pda).unwrap();
-    let approval = crate::state::UserState::try_deserialize(
+    let (user_state_pda, _) = get_user_state_pda(&users[0].pubkey());
+    let acct = svm.get_account(&user_state_pda).unwrap();
+    let user_state = crate::state::UserState::try_deserialize(
         &mut acct.data.as_ref(),
     ).unwrap();
-    assert_eq!(approval.amount_deposited, 300);
+    assert_eq!(user_state.amount_deposited, 300);
 
     msg!("test_withdraw_whitelisted passed");
 }

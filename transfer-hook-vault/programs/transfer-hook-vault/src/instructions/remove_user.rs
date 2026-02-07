@@ -19,11 +19,11 @@ pub struct RemoveUser<'info> {
     #[account(
         mut,
         close = admin,
-        seeds = [b"approval", user_to_remove.as_ref()],
-        bump = approval.bump,
-        constraint = approval.user == user_to_remove,
+        seeds = [b"user_state", user_to_remove.as_ref()],
+        bump = user_state.bump,
+        constraint = user_state.user == user_to_remove,
     )]
-    pub approval: Account<'info, UserState>,
+    pub user_state: Account<'info, UserState>,
 
     pub system_program: Program<'info, System>,
 }

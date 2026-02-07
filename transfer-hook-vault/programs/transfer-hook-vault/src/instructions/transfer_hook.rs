@@ -41,20 +41,20 @@ pub struct TransferHookCtx<'info> {
 
     /// CHECK: UserState PDA for the owner — checked manually
     #[account(
-        seeds = [b"approval", owner.key().as_ref()],
+        seeds = [b"user_state", owner.key().as_ref()],
         bump,
     )]
-    pub approval: UncheckedAccount<'info>,
+    pub user_state: UncheckedAccount<'info>,
 }
 
 impl<'info> TransferHookCtx<'info> {
     pub fn handler(&self, _amount: u64) -> Result<()> {
         self.check_is_transferring()?;
 
-        // Check that approval PDA exists (has data and is owned by our program)
-        let approval_info = &self.approval;
+        // Check that user_state PDA exists (has data and is owned by our program)
+        let user_state_info = &self.user_state;
         require!(
-            approval_info.owner == &crate::ID && approval_info.data_len() > 0,
+            user_state_info.owner == &crate::ID && user_state_info.data_len() > 0,
             VaultError::NotWhitelisted
         );
 

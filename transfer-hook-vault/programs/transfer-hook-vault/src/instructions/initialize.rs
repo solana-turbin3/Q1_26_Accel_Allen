@@ -26,15 +26,15 @@ pub struct Initialize<'info> {
     )]
     pub vault_config: Account<'info, VaultConfig>,
 
-    /// Approval PDA for vault_config so the transfer hook passes on withdrawals
+    /// UserState PDA for vault_config so the transfer hook passes on withdrawals
     #[account(
         init,
         payer = admin,
         space = 8 + UserState::INIT_SPACE,
-        seeds = [b"approval", vault_config.key().as_ref()],
+        seeds = [b"user_state", vault_config.key().as_ref()],
         bump,
     )]
-    pub vault_approval: Account<'info, UserState>,
+    pub vault_user_state: Account<'info, UserState>,
 
     /// CHECK: Mint account — initialized via CPI in handler
     #[account(mut)]
@@ -168,11 +168,11 @@ impl<'info> Initialize<'info> {
             bump: bumps.vault_config,
         });
 
-        // Create approval PDA for vault_config so hook passes on withdrawals
-        self.vault_approval.set_inner(UserState {
+        // Create UserState PDA for vault_config so hook passes on withdrawals
+        self.vault_user_state.set_inner(UserState {
             user: self.vault_config.key(),
             amount_deposited: 0,
-            bump: bumps.vault_approval,
+            bump: bumps.vault_user_state,
         });
 
         msg!("Vault initialized. Admin: {}, Mint: {}", self.admin.key(), self.mint.key());

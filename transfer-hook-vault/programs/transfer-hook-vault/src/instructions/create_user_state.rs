@@ -19,10 +19,10 @@ pub struct CreateUserState<'info> {
         init,
         payer = user,
         space = 8 + UserState::INIT_SPACE,
-        seeds = [b"approval", user.key().as_ref()],
+        seeds = [b"user_state", user.key().as_ref()],
         bump,
     )]
-    pub approval: Account<'info, UserState>,
+    pub user_state: Account<'info, UserState>,
 
     pub system_program: Program<'info, System>,
 }
@@ -61,10 +61,10 @@ impl<'info> CreateUserState<'info> {
             VaultError::InvalidMerkleProof
         );
 
-        self.approval.set_inner(UserState {
+        self.user_state.set_inner(UserState {
             user: self.user.key(),
             amount_deposited: 0,
-            bump: bumps.approval,
+            bump: bumps.user_state,
         });
 
         msg!("User state created for: {}", self.user.key());
