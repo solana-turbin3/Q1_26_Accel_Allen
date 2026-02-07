@@ -1,0 +1,36 @@
+use anchor_lang::prelude::*;
+
+use crate::errors::VaultError;
+use crate::state::{VaultConfig, UserState};
+
+#[derive(Accounts)]
+#[instruction(user_to_revoke: Pubkey)]
+pub struct RevokeWhitelist<'info> {
+    #[account(mut)]
+    pub admin: Signer<'info>,
+
+    #[account(
+        seeds = [b"vault_config"],
+        bump = vault_config.bump,
+        constraint = vault_config.admin == admin.key() @ VaultError::Unauthorized,
+    )]
+    pub vault_config: Account<'info, VaultConfig>,
+
+    #[account(
+        mut,
+        close = admin,
+        seeds = [b"approval", user_to_revoke.as_ref()],
+        bump = approval.bump,
+        constraint = approval.user == user_to_revoke,
+    )]
+    pub approval: Account<'info, UserState>,
+
+    pub system_program: Program<'info, System>,
+}
+
+impl<'info> RevokeWhitelist<'info> {
+    pub fn handler(&mut self, user_to_revoke: Pubkey) -> Result<()> {
+        msg!("Whitelist revoked for user: {}", user_to_revoke);
+        Ok(())
+    }
+}
