@@ -6,6 +6,8 @@ pub mod remove_user;
 pub mod deposit;
 pub mod withdraw;
 pub mod transfer_hook;
+pub mod schedule_merkle_root_update;
+pub mod apply_merkle_root_update;
 
 pub use initialize::*;
 pub use init_extra_account_meta::*;
@@ -15,3 +17,5 @@ pub use remove_user::*;
 pub use deposit::*;
 pub use withdraw::*;
 pub use transfer_hook::*;
+pub use schedule_merkle_root_update::*;
+pub use apply_merkle_root_update::*;

@@ -6,9 +6,11 @@ use anchor_lang::prelude::*;
 mod errors;
 mod instructions;
 mod state;
+mod tuktuk_types;
 mod tests;
 
 use instructions::*;
+use tuktuk_types::tuktuk::types::TriggerV0;
 
 use spl_transfer_hook_interface::instruction::ExecuteInstruction;
 use spl_discriminator::SplDiscriminate;
@@ -60,6 +62,21 @@ pub mod transfer_hook_vault {
 
     pub fn withdraw(ctx: Context<Withdraw>, amount: u64) -> Result<()> {
         ctx.accounts.handler(amount)
+    }
+
+    pub fn schedule_merkle_root_update(
+        ctx: Context<ScheduleMerkleRootUpdate>,
+        new_root: [u8; 32],
+        task_id: u16,
+        trigger: TriggerV0,
+    ) -> Result<()> {
+        ctx.accounts.handler(new_root, task_id, trigger, &ctx.bumps)
+    }
+
+    pub fn apply_merkle_root_update(
+        ctx: Context<ApplyMerkleRootUpdate>,
+    ) -> Result<()> {
+        ctx.accounts.handler()
     }
 
     #[instruction(discriminator = ExecuteInstruction::SPL_DISCRIMINATOR_SLICE)]

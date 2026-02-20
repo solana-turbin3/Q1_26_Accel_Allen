@@ -8,3 +8,5 @@ mod test_user_state;
 mod test_deposit;
 #[cfg(test)]
 mod test_withdraw;
+#[cfg(test)]
+mod test_merkle_root_update;
