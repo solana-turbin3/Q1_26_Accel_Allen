@@ -165,6 +165,7 @@ impl<'info> Initialize<'info> {
             mint: self.mint.key(),
             vault: vault_ata,
             merkle_root,
+            pending_merkle_root: [0u8; 32],
             bump: bumps.vault_config,
         });
 

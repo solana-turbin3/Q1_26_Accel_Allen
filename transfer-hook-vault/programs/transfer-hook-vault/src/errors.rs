@@ -16,4 +16,7 @@ pub enum VaultError {
 
     #[msg("This instruction must be called from a transfer hook")]
     NotTransferring,
+
+    #[msg("No pending merkle root update")]
+    NoPendingMerkleRoot,
 }

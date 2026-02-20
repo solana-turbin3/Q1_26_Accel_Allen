@@ -7,5 +7,6 @@ pub struct VaultConfig {
     pub mint: Pubkey,
     pub vault: Pubkey,
     pub merkle_root: [u8; 32],
+    pub pending_merkle_root: [u8; 32],
     pub bump: u8,
 }
