@@ -1,0 +1,21 @@
+{
+  "name": "solana-gpt-tuktuk-cron",
+  "version": "1.0.0",
+  "description": "Cron job to schedule GPT oracle queries via Tuktuk",
+  "scripts": {
+    "start": "ts-node cron.ts"
+  },
+  "dependencies": {
+    "@coral-xyz/anchor": "^0.32.0",
+    "@helium/cron-sdk": "^0.0.10",
+    "@helium/tuktuk-sdk": "^0.0.10",
+    "@solana/web3.js": "^1.95.0",
+    "axios": "^1.13.5",
+    "bs58": "^5.0.0",
+    "dotenv": "^16.0.0"
+  },
+  "devDependencies": {
+    "ts-node": "^10.9.0",
+    "typescript": "^5.0.0"
+  }
+}
