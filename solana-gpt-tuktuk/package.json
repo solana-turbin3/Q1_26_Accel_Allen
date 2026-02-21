@@ -1,0 +1,11 @@
+{
+  "name": "solana-gpt-tuktuk-test",
+  "private": true,
+  "dependencies": {
+    "@coral-xyz/anchor": "^0.32.0",
+    "@solana/web3.js": "^1.95.0",
+    "ts-node": "^10.9.0",
+    "typescript": "^5.0.0",
+    "@types/node": "^20.0.0"
+  }
+}
