@@ -12,3 +12,4 @@ Solana programs built with Anchor during the Turbin3 Q1 2026 accelerator.
 | [solana-gpt-tuktuk](./solana-gpt-tuktuk) | Schedules MagicBlock's Solana GPT Oracle via Tuktuk. Sends prompts on a cron schedule and stores LLM responses on-chain via callback. |
 | [generic-storage](./generic_storage) | Rust learning project: format-agnostic storage system using traits, generics, and PhantomData with Borsh, Wincode, and JSON serializers. |
 | [todo-queue](./todo_queue) | Rust learning project: CLI todo app with a generic FIFO queue, Borsh-only persistence, and Clap subcommands. |
+| [pinocchio-escrow](./accel-pinocchio-escrow) | Trustless SPL token escrow built with Pinocchio (zero-dependency framework). Supports Make, Take, Cancel, and a MakeV2 using Wincode deserialization. Tested with LiteSVM. |
