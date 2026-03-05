@@ -14,3 +14,4 @@ Solana programs built with Anchor during the Turbin3 Q1 2026 accelerator.
 | [todo-queue](./todo_queue) | Rust learning project: CLI todo app with a generic FIFO queue, Borsh-only persistence, and Clap subcommands. |
 | [pinocchio-escrow](./accel-pinocchio-escrow) | Trustless SPL token escrow built with Pinocchio (zero-dependency framework). Supports Make, Take, Cancel, and a MakeV2 using Wincode deserialization. Tested with LiteSVM. |
 | [pinocchio-fundraiser](./pinocchio-fundraiser) | SPL token fundraiser built with Pinocchio. Supports Initialize, CreateContributor, Contribute, Checker (claim), and Refund. 10% per-contributor cap with time-based expiry. Tested with LiteSVM. |
+| [nft-staking-core-example](./nft-staking-core-example) | Non-custodial Metaplex Core NFT staking with claim-without-unstaking, burn-to-earn, collection stats, and Oracle-based time-gated transfers (9AM-5PM UTC). Tested with LiteSVM time travel. |
